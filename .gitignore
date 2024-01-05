@@ -99,4 +99,5 @@ fabric.properties
 # Custom
 .idea
 .DS_Store
+.oxyeo/maven/settings-security.xml
 
