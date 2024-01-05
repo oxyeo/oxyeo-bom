@@ -6,7 +6,16 @@
         <server>
             <id>github.com</id>
             <username>oxyeo-builds</username>
-            <password>{KGAmNKay7JcHgkL6qqDHvJ0/lNKtyQ4wK/uIITk82bjSgC0A5K80lVmwNVAIloLOqZOlcESzI4fRb/16N8DHXA==}</password>
+            <password><![CDATA[{KGAmNKay7JcHgkL6qqDHvJ0/lNKtyQ4wK/uIITk82bjSgC0A5K80lVmwNVAIloLOqZOlcESzI4fRb/16N8DHXA==}]]></password>
+        </server>
+        <server>
+            <id>gpg.passphrase</id>
+            <passphrase><![CDATA[{FwfXsVoyqfUHrwo2StjT9rL6Kiux6KOq7lKagtORABU=}]]></passphrase>
+        </server>
+        <server>
+            <id>ossrh</id>
+            <username>oxyeo.dev</username>
+            <password><![CDATA[{ZKV6upyqB98Hi87Lw2z4Dva1ZG39XsxPo/LdfYDstNE=}]]></password>
         </server>
     </servers>
 </settings>
