@@ -1,0 +1,41 @@
+stages:
+  - build
+  - release
+
+variables:
+  MVN_CMD: "./mvnw"
+  MVN_CLI_OPTS: "--batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/
+    - target/
+
+before_script:
+  - "export MAVEN_USER_HOME=`pwd`/.m2"
+
+build:
+  stage: build
+  script:
+    - $MVN_CMD $MVN_CLI_OPTS compile
+  artifacts:
+    paths:
+      - target/
+
+release:
+  stage: release
+  when: manual
+  variables:
+    RELEASE_VERSION: ""
+    NEXT_VERSION: ""
+  only:
+    - main
+  before_script:
+    - cp $MAVEN_SETTINGS_SECURITY $MAVEN_USER_HOME/settings-security.xml
+  script:
+    - echo $GPG_PRIVATE_KEY | gpg --import
+    - |
+      $MVN_CMD $MVN_CLI_OPTS release:prepare release:perform \
+      -DreleaseVersion=$RELEASE_VERSION \
+      -DdevelopmentVersion=$NEXT_VERSION
