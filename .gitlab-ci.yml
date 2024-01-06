@@ -1,3 +1,5 @@
+image: openjdk:17-jdk-alpine
+
 stages:
   - build
   - release
@@ -8,17 +10,35 @@ variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 cache:
+  key: "v1-${CI_COMMIT_REF_SLUG}"
   paths:
     - .m2/
-    - target/
+    - target/\
 
-before_script:
-  - "export MAVEN_USER_HOME=`pwd`/.m2"
+#  ---- Scripts --------------------------------------------------------------------------------------------------------
+.install_deps: &install_deps |
+  apk add --update git gnupg
+  mkdir -p ~/.gnupg
+
+.configure_git: &configure_git |
+  git config --global user.email "build@oxyeo.dev"
+  git config --global user.name "oxyeo-builds"
+
+.configure_gpg: &configure_gpg |
+  echo 'allow-loopback-pinentry' > ~/.gnupg/gpg-agent.conf
+  echo RELOADAGENT | gpg-connect-agent
+  echo $GPG_PRIVATE_KEY | base64 -d | gpg2 --batch --import
+
+.configure_maven: &configure_maven |
+  export MAVEN_USER_HOME=/root/.m2
+  mkdir -p /root/.m2/
+  cp $MAVEN_SETTINGS_SECURITY /root/.m2/settings-security.xml
+#  ---------------------------------------------------------------------------------------------------------------------
 
 build:
   stage: build
   script:
-    - $MVN_CMD $MVN_CLI_OPTS compile
+    - $MVN_CMD $MVN_CLI_OPTS verify
   artifacts:
     paths:
       - target/
@@ -32,10 +52,13 @@ release:
   only:
     - main
   before_script:
-    - cp $MAVEN_SETTINGS_SECURITY $MAVEN_USER_HOME/settings-security.xml
+    - *install_deps
+    - *configure_git
+    - *configure_gpg
+    - *configure_maven
   script:
-    - echo $GPG_PRIVATE_KEY | gpg --import
+    - git checkout main
     - |
-      $MVN_CMD $MVN_CLI_OPTS release:prepare release:perform \
+      $MVN_CMD $MVN_CLI_OPTS -X release:prepare release:perform \
       -DreleaseVersion=$RELEASE_VERSION \
       -DdevelopmentVersion=$NEXT_VERSION
