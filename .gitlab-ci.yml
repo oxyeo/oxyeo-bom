@@ -1,3 +1,5 @@
+image: openjdk:17-jdk-alpine
+
 stages:
   - build
   - release
@@ -12,13 +14,16 @@ cache:
     - .m2/
     - target/
 
-before_script:
-  - "export MAVEN_USER_HOME=`pwd`/.m2"
+default:
+  before_script:
+    - "export MAVEN_USER_HOME=`pwd`/.m2"
+    - "mkdir -p $MAVEN_USER_HOME"
+    - cp $MAVEN_SETTINGS_SECURITY $MAVEN_USER_HOME/settings-security.xml
 
 build:
   stage: build
   script:
-    - $MVN_CMD $MVN_CLI_OPTS compile
+    - $MVN_CMD $MVN_CLI_OPTS verify
   artifacts:
     paths:
       - target/
@@ -31,10 +36,17 @@ release:
     NEXT_VERSION: ""
   only:
     - main
-  before_script:
-    - cp $MAVEN_SETTINGS_SECURITY $MAVEN_USER_HOME/settings-security.xml
   script:
-    - echo $GPG_PRIVATE_KEY | gpg --import
+    - |
+      apk add --update git gnupg
+      mkdir -p ~/.gnupg
+    - |
+      git config --global user.email "build@oxyeo.dev"
+      git config --global user.name "oxyeo-builds"
+    - |
+      echo 'allow-loopback-pinentry' > ~/.gnupg/gpg-agent.conf
+      echo RELOADAGENT | gpg-connect-agent
+    - echo $GPG_PRIVATE_KEY | base64 -d | gpg2 --batch --import
     - |
       $MVN_CMD $MVN_CLI_OPTS release:prepare release:perform \
       -DreleaseVersion=$RELEASE_VERSION \
