@@ -57,6 +57,7 @@ release:
     - *configure_gpg
     - *configure_maven
   script:
+    - git checkout main
     - |
       $MVN_CMD $MVN_CLI_OPTS -X release:prepare release:perform \
       -DreleaseVersion=$RELEASE_VERSION \
