@@ -57,7 +57,9 @@ release:
     - *configure_gpg
     - *configure_maven
   script:
-    - git checkout main
+    - |
+      git checkout $CI_COMMIT_REF_NAME
+      git pull --rebase origin $CI_COMMIT_REF_NAME
     - |
       $MVN_CMD $MVN_CLI_OPTS -X release:prepare release:perform \
       -DreleaseVersion=$RELEASE_VERSION \
