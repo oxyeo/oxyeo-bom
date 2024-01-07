@@ -47,6 +47,6 @@ release:
       echo RELOADAGENT | gpg-connect-agent
     - echo $GPG_PRIVATE_KEY | base64 -d | gpg2 --batch --import
     - |
-      $MVN_CMD $MVN_CLI_OPTS release:prepare release:perform \
+      $MVN_CMD $MVN_CLI_OPTS -X release:prepare release:perform \
       -DreleaseVersion=$RELEASE_VERSION \
       -DdevelopmentVersion=$NEXT_VERSION
