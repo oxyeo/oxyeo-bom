@@ -45,8 +45,8 @@ release:
     - echo $GPG_PRIVATE_KEY | base64 -d | gpg2 --batch --import
     - |
       export MAVEN_USER_HOME=/root/.m2
-      mkdir -p ${MAVEN_USER_HOME}/
-      cp $MAVEN_SETTINGS_SECURITY ${MAVEN_USER_HOME}/
+      mkdir -p /root/.m2/
+    - cp $MAVEN_SETTINGS_SECURITY /root/.m2/settings-security.xml
   script:
     - |
       $MVN_CMD $MVN_CLI_OPTS -X release:prepare release:perform \
