@@ -14,11 +14,8 @@ cache:
     - .m2/
     - target/
 
-default:
-  before_script:
-    - "export MAVEN_USER_HOME=`pwd`/.m2"
-    - "mkdir -p $MAVEN_USER_HOME"
-    - cp $MAVEN_SETTINGS_SECURITY $MAVEN_USER_HOME/settings-security.xml
+before_script:
+  - "export MAVEN_USER_HOME=`pwd`/.m2"
 
 build:
   stage: build
@@ -44,6 +41,7 @@ release:
       git config --global user.email "build@oxyeo.dev"
       git config --global user.name "oxyeo-builds"
       git checkout -b temp
+    - cp $MAVEN_SETTINGS_SECURITY $MAVEN_USER_HOME/settings-security.xml
     - |
       echo 'allow-loopback-pinentry' > ~/.gnupg/gpg-agent.conf
       echo RELOADAGENT | gpg-connect-agent
