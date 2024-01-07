@@ -46,7 +46,7 @@ release:
     - |
       export MAVEN_USER_HOME=$(pwd)/.m2
       mkdir -p ${MAVEN_USER_HOME}/
-      echo $MAVEN_SETTINGS_SECURITY | base64 -d > ${MAVEN_USER_HOME}/settings-security.xml
+      cp $MAVEN_SETTINGS_SECURITY ${MAVEN_USER_HOME}/
   script:
     - |
       $MVN_CMD $MVN_CLI_OPTS -X release:prepare release:perform \
