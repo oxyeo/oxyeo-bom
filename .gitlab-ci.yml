@@ -44,7 +44,7 @@ release:
       echo RELOADAGENT | gpg-connect-agent
     - echo $GPG_PRIVATE_KEY | base64 -d | gpg2 --batch --import
     - |
-      export MAVEN_USER_HOME=$(pwd)/.m2
+      export MAVEN_USER_HOME=/root/.m2
       mkdir -p ${MAVEN_USER_HOME}/
       cp $MAVEN_SETTINGS_SECURITY ${MAVEN_USER_HOME}/
   script:
