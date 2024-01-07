@@ -43,6 +43,7 @@ release:
     - |
       git config --global user.email "build@oxyeo.dev"
       git config --global user.name "oxyeo-builds"
+      git checkout -b temp
     - |
       echo 'allow-loopback-pinentry' > ~/.gnupg/gpg-agent.conf
       echo RELOADAGENT | gpg-connect-agent
